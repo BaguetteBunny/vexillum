@@ -22,6 +22,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const elModal = document.getElementById("settings-modal");
   const elSettingsSave = document.getElementById("settings-save");
 
+  // SELECT ALL
+  const selectAllCb = document.getElementById("select-all-cats");
+  const categoryCbs = document.querySelectorAll('input[name="q-cat"]');
+  selectAllCb.addEventListener("change", (e) => {
+  categoryCbs.forEach(cb => {
+      cb.checked = e.target.checked;
+  });
+  });
+  categoryCbs.forEach(cb => {
+  cb.addEventListener("change", () => {
+      const allChecked = Array.from(categoryCbs).every(c => c.checked);
+      selectAllCb.checked = allChecked;
+  });
+  });
+
   function handleRouting() {
     let hash = window.location.hash.replace("#/", "").toLowerCase();
     let pathname = window.location.pathname.replace("/", "").toLowerCase();
