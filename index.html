@@ -1,17 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vexillum</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vexillum</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
-    <header>
-        <h1>Welcome to My Website</h1>
-    </header>
 
-    <script src="js/script.js"></script>
+    <div class="app-layout">
+        <div class="sidebar-wrapper">
+            <div class="sidebar-handle" aria-label="Toggle Navigation">
+                <svg class="arrow-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                    <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                </svg>
+            </div>
+
+            <aside class="sidebar">
+                <nav class="sidebar-nav">
+                    <a href="#/quiz" class="nav-item" data-route="quiz">
+                        <svg class="icon-placeholder" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                            <rect width="20" height="20" x="2" y="2" rx="4" opacity="0.4"/>
+                        </svg>
+                        <span>Quiz</span>
+                    </a>
+                    <a href="#/challenge" class="nav-item" data-route="challenge">
+                        <svg class="icon-placeholder" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                            <rect width="20" height="20" x="2" y="2" rx="4" opacity="0.4"/>
+                        </svg>
+                        <span>Challenge</span>
+                    </a>
+                    <a href="#/api" class="nav-item" data-route="api">
+                        <svg class="icon-placeholder" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                            <rect width="20" height="20" x="2" y="2" rx="4" opacity="0.4"/>
+                        </svg>
+                        <span>API</span>
+                    </a>
+                    <a href="#/faq" class="nav-item" data-route="faq">
+                        <svg class="icon-placeholder" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                            <rect width="20" height="20" x="2" y="2" rx="4" opacity="0.4"/>
+                        </svg>
+                        <span>FAQ</span>
+                    </a>
+                </nav>
+            </aside>
+        </div>
+
+    <!-- Main Content Area -->
+    <main class="content">
+
+      <!-- Quiz View <p class="main-title">Vexillum</p> -->
+      <section id="view-quiz" class="view">
+        <button id="quiz-settings-btn" class="icon-btn" aria-label="Settings">⚙️</button>
+        <h1 class="main-title">Vexillum</h1>
+        
+        <div class="quiz-container">
+          <!-- Flag Image -->
+          <div class="flag-container">
+            <img id="quiz-flag" src="" alt="Guess the Flag">
+          </div>
+          
+          <!-- Counter -->
+          <div id="quiz-counter" class="counter">0 / 0</div>
+
+          <!-- Multiple Choice Mode -->
+          <div id="quiz-mcq" class="mcq-grid">
+            <button class="quiz-btn mcq-btn"></button>
+            <button class="quiz-btn mcq-btn"></button>
+            <button class="quiz-btn mcq-btn"></button>
+            <button class="quiz-btn mcq-btn"></button>
+          </div>
+
+          <!-- Written Mode -->
+          <div id="quiz-written" class="written-container" style="display: none;">
+            <input type="text" id="written-input" placeholder="Enter country/region name..." autocomplete="off">
+            <button id="written-submit" class="quiz-btn">Submit</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Challenge View -->
+      <section id="view-challenge" class="view">
+        <h2>Challenge Section</h2>
+        <p>Test Test Test Test Test</p>
+      </section>
+
+      <!-- API View -->
+      <section id="view-api" class="view">
+        <h2>API Documentation</h2>
+        <p>Test Test Test Test Test</p>
+      </section>
+
+      <!-- FAQ View -->
+      <section id="view-faq" class="view">
+        <h2>Frequently Asked Questions</h2>
+        <p>Test Test Test Test Test</p>
+      </section>
+    </main>
+  </div>
+
+  <!-- Quiz Settings Modal -->
+  <div id="settings-modal" class="modal">
+    <div class="modal-content">
+      <h2 class="modal-title">Quiz Settings</h2>
+      
+      <div class="setting-group">
+        <h3>Format</h3>
+        <label><input type="radio" name="q-format" value="mcq" checked> Multiple Choice (4 Options)</label>
+        <label><input type="radio" name="q-format" value="written"> Written (Typing)</label>
+      </div>
+
+      <div class="setting-group">
+        <h3>Progression</h3>
+        <label><input type="radio" name="q-mode" value="unique" checked> Unique Flags (with Counter)</label>
+        <label><input type="radio" name="q-mode" value="repeats"> Endless (Random Repeats)</label>
+      </div>
+
+      <div class="setting-group">
+        <h3>Categories</h3>
+        <div class="checkbox-grid">
+          <label><input type="checkbox" name="q-cat" value="europe" checked> Europe</label>
+          <label><input type="checkbox" name="q-cat" value="north_america" checked> North America</label>
+          <label><input type="checkbox" name="q-cat" value="south_america" checked> South America</label>
+          <label><input type="checkbox" name="q-cat" value="africa" checked> Africa</label>
+          <label><input type="checkbox" name="q-cat" value="asia" checked> Asia</label>
+          <label><input type="checkbox" name="q-cat" value="australia" checked> Australia (Oceania)</label>
+          <label><input type="checkbox" name="q-cat" value="us_states"> US States</label>
+          <label><input type="checkbox" name="q-cat" value="territories"> Territories</label>
+          <label><input type="checkbox" name="q-cat" value="international_organisations"> International Organisations</label>
+        </div>
+      </div>
+
+      <button id="settings-save" class="quiz-btn primary-btn">Save & Restart Quiz</button>
+    </div>
+  </div>
+
+  <script src="js/script.js"></script>
 </body>
 </html>
