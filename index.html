@@ -8,62 +8,62 @@
 </head>
 <body>
 
-    <div class="app-layout">
-        <div class="sidebar-wrapper">
-            <div class="sidebar-handle" aria-label="Toggle Navigation">
-                <svg class="arrow-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                    <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-                </svg>
-            </div>
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <div class="sidebar-wrapper">
+      <div class="sidebar-handle" aria-label="Toggle Navigation">
+        <svg class="arrow-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+          <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+        </svg>
+      </div>
 
-            <aside class="sidebar">
-                <nav class="sidebar-nav">
-                    <a href="#/quiz" class="nav-item" data-route="quiz">
-                        <svg class="icon-placeholder" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                            <rect width="20" height="20" x="2" y="2" rx="4" opacity="0.4"/>
-                        </svg>
-                        <span>Quiz</span>
-                    </a>
-                    <a href="#/challenge" class="nav-item" data-route="challenge">
-                        <svg class="icon-placeholder" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                            <rect width="20" height="20" x="2" y="2" rx="4" opacity="0.4"/>
-                        </svg>
-                        <span>Challenge</span>
-                    </a>
-                    <a href="#/api" class="nav-item" data-route="api">
-                        <svg class="icon-placeholder" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                            <rect width="20" height="20" x="2" y="2" rx="4" opacity="0.4"/>
-                        </svg>
-                        <span>API</span>
-                    </a>
-                    <a href="#/faq" class="nav-item" data-route="faq">
-                        <svg class="icon-placeholder" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                            <rect width="20" height="20" x="2" y="2" rx="4" opacity="0.4"/>
-                        </svg>
-                        <span>FAQ</span>
-                    </a>
-                </nav>
-            </aside>
-        </div>
+      <aside class="sidebar">
+        <nav class="sidebar-nav">
+          <a href="#/quiz" class="nav-item" data-route="quiz">
+            <svg class="icon-placeholder" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <rect width="20" height="20" x="2" y="2" rx="4" opacity="0.4"/>
+            </svg>
+            <span>Quiz</span>
+          </a>
+          <a href="#/api" class="nav-item" data-route="api">
+            <svg class="icon-placeholder" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <rect width="20" height="20" x="2" y="2" rx="4" opacity="0.4"/>
+            </svg>
+            <span>API</span>
+          </a>
+          <a href="#/faq" class="nav-item" data-route="faq">
+            <svg class="icon-placeholder" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <rect width="20" height="20" x="2" y="2" rx="4" opacity="0.4"/>
+            </svg>
+            <span>FAQ</span>
+          </a>
+        </nav>
+      </aside>
+    </div>
 
     <!-- Main Content Area -->
     <main class="content">
-
-      <!-- Quiz View <p class="main-title">Vexillum</p> -->
+      <!-- Quiz View -->
       <section id="view-quiz" class="view">
-        <button id="quiz-settings-btn" class="icon-btn" aria-label="Settings">⚙️</button>
+        <div class="quiz-header-controls">
+          <div id="quiz-score-badge" class="score-badge" style="display: none;">Score: <span id="outer-score-val">0</span></div>
+          <button id="quiz-settings-btn" class="icon-btn" aria-label="Settings">⚙️</button>
+        </div>
+
         <h1 class="main-title">Vexillum</h1>
         
         <div class="quiz-container">
-          <!-- Flag Image -->
+          <div id="quiz-timer-display" class="timer-display" style="display: none;">
+            <span id="timer-text">10s</span>
+            <div class="timer-bar-bg"><div id="timer-bar-fill" class="timer-bar-fill"></div></div>
+          </div>
+
           <div class="flag-container">
             <img id="quiz-flag" src="" alt="Guess the Flag">
           </div>
           
-          <!-- Counter -->
           <div id="quiz-counter" class="counter">0 / 0</div>
 
-          <!-- Multiple Choice Mode -->
           <div id="quiz-mcq" class="mcq-grid">
             <button class="quiz-btn mcq-btn"></button>
             <button class="quiz-btn mcq-btn"></button>
@@ -71,7 +71,6 @@
             <button class="quiz-btn mcq-btn"></button>
           </div>
 
-          <!-- Written Mode -->
           <div id="quiz-written" class="written-container" style="display: none;">
             <input type="text" id="written-input" placeholder="Enter country/region name..." autocomplete="off">
             <button id="written-submit" class="quiz-btn">Submit</button>
@@ -79,56 +78,87 @@
         </div>
       </section>
 
-      <!-- Challenge View -->
-      <section id="view-challenge" class="view">
-        <h2>Challenge Section</h2>
-        <p>Test Test Test Test Test</p>
-      </section>
-
-      <!-- API View -->
-      <section id="view-api" class="view">
-        <h2>API Documentation</h2>
-        <p>Test Test Test Test Test</p>
-      </section>
-
-      <!-- FAQ View -->
-      <section id="view-faq" class="view">
-        <h2>Frequently Asked Questions</h2>
-        <p>Test Test Test Test Test</p>
-      </section>
+      <!-- Other Views -->
+      <section id="view-challenge" class="view"><h2>Challenge Section</h2></section>
+      <section id="view-api" class="view"><h2>API Documentation</h2></section>
+      <section id="view-faq" class="view"><h2>Frequently Asked Questions</h2></section>
     </main>
   </div>
 
   <!-- Quiz Settings Modal -->
   <div id="settings-modal" class="modal">
-    <div class="modal-content">
+    <div class="modal-content modal-large">
       <h2 class="modal-title">Quiz Settings</h2>
       
-      <div class="setting-group">
-        <h3>Format</h3>
-        <label><input type="radio" name="q-format" value="mcq" checked> Multiple Choice (4 Options)</label>
-        <label><input type="radio" name="q-format" value="written"> Written (Typing)</label>
-      </div>
+      <div class="settings-grid">
+        <!-- LEFT COLUMN -->
+        <div class="settings-col">
+          <div class="setting-group">
+            <h3>Format</h3>
+            <label><input type="radio" name="q-format" value="mcq" checked> Multiple Choice <span class="mult-label">(x1.0)</span></label>
+            <label><input type="radio" name="q-format" value="written"> Written (Typing) <span class="mult-label">(x2.0)</span></label>
+          </div>
 
-      <div class="setting-group">
-        <h3>Progression</h3>
-        <label><input type="radio" name="q-mode" value="unique" checked> Unique Flags (with Counter)</label>
-        <label><input type="radio" name="q-mode" value="repeats"> Endless (Random Repeats)</label>
-      </div>
+          <div class="setting-group">
+            <h3>Progression</h3>
+            <label><input type="radio" name="q-mode" value="unique" checked> Unique Flags (with Counter)</label>
+            <label><input type="radio" name="q-mode" value="repeats"> Endless (Random Repeats)</label>
+          </div>
 
-      <div class="setting-group">
-        <h3>Categories</h3>
-        <div class="checkbox-grid">
-          <label><input type="checkbox" id="select-all-cats" value="all"> <strong>Select All</strong></label>
-          <label><input type="checkbox" name="q-cat" value="europe" checked> Europe</label>
-          <label><input type="checkbox" name="q-cat" value="north_america" checked> North America</label>
-          <label><input type="checkbox" name="q-cat" value="south_america" checked> South America</label>
-          <label><input type="checkbox" name="q-cat" value="africa" checked> Africa</label>
-          <label><input type="checkbox" name="q-cat" value="asia" checked> Asia</label>
-          <label><input type="checkbox" name="q-cat" value="australia" checked> Australia (Oceania)</label>
-          <label><input type="checkbox" name="q-cat" value="us_states"> US States</label>
-          <label><input type="checkbox" name="q-cat" value="territories"> Territories</label>
-          <label><input type="checkbox" name="q-cat" value="international_organisations"> International Organisations</label>
+          <div class="setting-group">
+            <h3>Categories</h3>
+            <div class="checkbox-grid">
+              <label class="cat-label"><input type="checkbox" id="select-all-cats" value="all"> <strong>Select All</strong></label>
+              <label class="cat-label pts-white" title="100 pts"><input type="checkbox" name="q-cat" value="europe" data-pts="100" checked> Europe</label>
+              <label class="cat-label pts-white" title="100 pts"><input type="checkbox" name="q-cat" value="north_america" data-pts="100" checked> N. America</label>
+              <label class="cat-label pts-white" title="100 pts"><input type="checkbox" name="q-cat" value="south_america" data-pts="100" checked> S. America</label>
+              <label class="cat-label pts-yellow" title="150 pts"><input type="checkbox" name="q-cat" value="africa" data-pts="150" checked> Africa</label>
+              <label class="cat-label pts-yellow" title="150 pts"><input type="checkbox" name="q-cat" value="asia" data-pts="150" checked> Asia</label>
+              <label class="cat-label pts-yellow" title="150 pts"><input type="checkbox" name="q-cat" value="oceania" data-pts="150" checked> Oceania</label>
+              <label class="cat-label pts-orange" title="200 pts"><input type="checkbox" name="q-cat" value="us_states" data-pts="200"> US States</label>
+              <label class="cat-label pts-red" title="250 pts"><input type="checkbox" name="q-cat" value="territories" data-pts="250"> Territories</label>
+              <label class="cat-label pts-purple" title="300 pts"><input type="checkbox" name="q-cat" value="international_organisations" data-pts="300"> Int. Org</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="settings-col">
+          <!-- Timer Section -->
+          <div class="setting-group">
+            <div class="setting-header-inline">
+              <h3>Timer Limit <span id="timer-mult-label" class="mult-label" style="display: none;">(x2.0)</span></h3>
+              <button id="timer-toggle-btn" class="quiz-btn toggle-btn inactive">Timer: OFF</button>
+            </div>
+            <div id="timer-slider-container" class="slider-container disabled">
+              <input type="range" id="timer-slider" min="2" max="20" value="10" step="1" disabled>
+              <span id="timer-val-label" class="slider-val">10s</span>
+            </div>
+          </div>
+
+          <!-- Fun Section -->
+          <div class="setting-group">
+            <h3>Fun Modes</h3>
+            <div class="fun-btn-grid">
+              <button id="scoring-toggle-btn" class="quiz-btn fun-btn inactive">Enable Scoring</button>
+              <button class="quiz-btn fun-btn unused" disabled>Double Points</button>
+              <button class="quiz-btn fun-btn unused" disabled>Sudden Death</button>
+              <button class="quiz-btn fun-btn unused" disabled>Reverse Flag</button>
+            </div>
+          </div>
+
+          <!-- Live Score Card -->
+          <div class="score-card">
+            <h4>Scoring Summary</h4>
+            <div class="score-row">
+              <span>Points per Flag:</span>
+              <strong id="modal-pts-per-flag">0 pts</strong>
+            </div>
+            <div class="score-row">
+              <span>Current Score:</span>
+              <strong id="modal-current-score">0</strong>
+            </div>
+          </div>
         </div>
       </div>
 
