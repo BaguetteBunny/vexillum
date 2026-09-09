@@ -8,35 +8,35 @@ _NUMERIC_LENGTH_RE = re.compile(r"^\s*([0-9]*\.?[0-9]+)\s*(px)?\s*$")
 
 
 def _parse_length(value: str) -> float | None:
-    if not value:
-        return None
+    """Parses string and returns None if it's invalid"""
+    if not value: return None
+
     match = _NUMERIC_LENGTH_RE.match(value)
-    if not match:
-        return None
+    if not match: return None
+
     number = float(match.group(1))
     return number if number > 0 else None
 
 
 def _parse_viewbox(value: str) -> tuple[float, float, float, float] | None:
-    if not value:
-        return None
+    """Parses viewbox to check if all 4 elements are valid floats"""
+    if not value: return None
+
     parts = value.replace(",", " ").split()
-    if len(parts) != 4:
-        return None
-    try:
-        min_x, min_y, w, h = (float(p) for p in parts)
-    except ValueError:
-        return None
-    if w <= 0 or h <= 0:
-        return None
+    if len(parts) != 4: return None
+
+    try: min_x, min_y, w, h = (float(p) for p in parts)
+    except ValueError: return None
+
+    if w <= 0 or h <= 0: return None
+
     return min_x, min_y, w, h
 
 
-def _format_num(n: float) -> str:
-    return str(int(n)) if n == int(n) else str(n)
-
+def _format_num(n: float) -> str: return str(int(n)) if n == int(n) else str(n)
 
 def fix_svg_size(svg_path: str) -> str:
+    """Load file & repair"""
     tree = ET.parse(svg_path)
     root = tree.getroot()
 
@@ -61,6 +61,10 @@ def fix_svg_size(svg_path: str) -> str:
 
 
 def main() -> None:
+    """
+    Example Usage:
+    python py/svg_resizer.py assets/misc/io-ba.svg
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("svg_path")
     args = parser.parse_args()
@@ -68,7 +72,5 @@ def main() -> None:
     status = fix_svg_size(args.svg_path)
     print(f"{status}: {args.svg_path}")
 
-# Run with:
-# python py/svg_resizer.py assets/misc/io-ba.svg
 if __name__ == "__main__":
     main()
