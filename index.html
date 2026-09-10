@@ -9,34 +9,12 @@
 <body>
 
   <div class="app-layout">
-    <!-- Sidebar Navigation -->
     <div class="sidebar-wrapper">
-      <div class="sidebar-handle" aria-label="Toggle Navigation">
-        <svg class="arrow-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-          <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-        </svg>
-      </div>
-
       <aside class="sidebar">
         <nav class="sidebar-nav">
-          <a href="#/quiz" class="nav-item" data-route="quiz">
-            <svg class="icon-placeholder" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-              <rect width="20" height="20" x="2" y="2" rx="4" opacity="0.4"/>
-            </svg>
-            <span>Quiz</span>
-          </a>
-          <a href="#/api" class="nav-item" data-route="api">
-            <svg class="icon-placeholder" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-              <rect width="20" height="20" x="2" y="2" rx="4" opacity="0.4"/>
-            </svg>
-            <span>API</span>
-          </a>
-          <a href="#/faq" class="nav-item" data-route="faq">
-            <svg class="icon-placeholder" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-              <rect width="20" height="20" x="2" y="2" rx="4" opacity="0.4"/>
-            </svg>
-            <span>FAQ</span>
-          </a>
+          <a href="#/quiz" class="nav-item" data-route="quiz">Quiz</a>
+          <a href="#/api" class="nav-item" data-route="api">API</a>
+          <a href="#/faq" class="nav-item" data-route="faq">FAQ</a>
         </nav>
       </aside>
     </div>
@@ -78,8 +56,6 @@
         </div>
       </section>
 
-      <!-- Other Views -->
-      <section id="view-challenge" class="view"><h2>Challenge Section</h2></section>
       <section id="view-api" class="view"><h2>API Documentation</h2></section>
       <section id="view-faq" class="view"><h2>Frequently Asked Questions</h2></section>
     </main>
@@ -91,42 +67,60 @@
       <h2 class="modal-title">Quiz Settings</h2>
       
       <div class="settings-grid">
-        <!-- LEFT COLUMN -->
         <div class="settings-col">
           <div class="setting-group">
+            <h3>Categories</h3>
+            <div class="checkbox-grid">
+              <label class="cat-label cat-all"><input type="checkbox" id="select-all-cats" value="all"> Select All</label>
+            </div>
+
+            <div class="cat-subgroup">
+              <h4 class="cat-subgroup-title">Countries & Territories</h4>
+              <div class="checkbox-grid">
+                <label class="cat-label pts-white"><input type="checkbox" name="q-cat" value="europe" data-pts="100" checked> Europe <span class="pts-badge">100</span></label>
+                <label class="cat-label pts-white"><input type="checkbox" name="q-cat" value="north_america" data-pts="100" checked> N. America <span class="pts-badge">100</span></label>
+                <label class="cat-label pts-white"><input type="checkbox" name="q-cat" value="south_america" data-pts="100" checked> S. America <span class="pts-badge">100</span></label>
+                <label class="cat-label pts-yellow"><input type="checkbox" name="q-cat" value="africa" data-pts="150" checked> Africa <span class="pts-badge">150</span></label>
+                <label class="cat-label pts-yellow"><input type="checkbox" name="q-cat" value="asia" data-pts="150" checked> Asia <span class="pts-badge">150</span></label>
+                <label class="cat-label pts-yellow"><input type="checkbox" name="q-cat" value="oceania" data-pts="150" checked> Oceania <span class="pts-badge">150</span></label>
+                <label class="cat-label pts-red"><input type="checkbox" name="q-cat" value="territories" data-pts="250"> Territories <span class="pts-badge">250</span></label>
+              </div>
+            </div>
+
+            <div class="cat-subgroup">
+              <h4 class="cat-subgroup-title">States</h4>
+              <div class="checkbox-grid">
+                <label class="cat-label pts-orange"><input type="checkbox" name="q-cat" value="us_states" data-pts="200"> US States <span class="pts-badge">200</span></label>
+              </div>
+            </div>
+
+            <div class="cat-subgroup">
+              <h4 class="cat-subgroup-title">Others</h4>
+              <div class="checkbox-grid">
+                <label class="cat-label pts-yellow"><input type="checkbox" name="q-cat" value="pride" data-pts="150"> LGBTQ+ <span class="pts-badge">150</span></label>
+                <label class="cat-label pts-purple"><input type="checkbox" name="q-cat" value="international_organisations" data-pts="300"> Int. Org <span class="pts-badge">300</span></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="setting-group">
             <h3>Format</h3>
-            <label><input type="radio" name="q-format" value="mcq" checked> Multiple Choice <span class="mult-label">(x1.0)</span></label>
-            <label><input type="radio" name="q-format" value="written"> Written (Typing) <span class="mult-label">(x2.0)</span></label>
+            <div class="checkbox-grid">
+              <label class="choice-label"><input type="radio" name="q-format" value="mcq" checked> Multiple Choice <span class="pts-badge format-badge">x1.0</span></label>
+              <label class="choice-label"><input type="radio" name="q-format" value="written"> Written (Typing) <span class="pts-badge format-badge">x2.0</span></label>
+            </div>
           </div>
 
           <div class="setting-group">
             <h3>Progression</h3>
-            <label><input type="radio" name="q-mode" value="unique" checked> Unique Flags (with Counter)</label>
-            <label><input type="radio" name="q-mode" value="repeats"> Endless (Random Repeats)</label>
-          </div>
-
-          <div class="setting-group">
-            <h3>Categories</h3>
             <div class="checkbox-grid">
-              <label class="cat-label"><input type="checkbox" id="select-all-cats" value="all"> <strong>Select All</strong></label>
-              <label class="cat-label pts-white" title="100 pts"><input type="checkbox" name="q-cat" value="europe" data-pts="100" checked> Europe</label>
-              <label class="cat-label pts-white" title="100 pts"><input type="checkbox" name="q-cat" value="north_america" data-pts="100" checked> N. America</label>
-              <label class="cat-label pts-white" title="100 pts"><input type="checkbox" name="q-cat" value="south_america" data-pts="100" checked> S. America</label>
-              <label class="cat-label pts-yellow" title="150 pts"><input type="checkbox" name="q-cat" value="africa" data-pts="150" checked> Africa</label>
-              <label class="cat-label pts-yellow" title="150 pts"><input type="checkbox" name="q-cat" value="asia" data-pts="150" checked> Asia</label>
-              <label class="cat-label pts-yellow" title="150 pts"><input type="checkbox" name="q-cat" value="oceania" data-pts="150" checked> Oceania</label>
-              <label class="cat-label pts-orange" title="200 pts"><input type="checkbox" name="q-cat" value="us_states" data-pts="200"> US States</label>
-              <label class="cat-label pts-red" title="250 pts"><input type="checkbox" name="q-cat" value="territories" data-pts="250"> Territories</label>
-              <label class="cat-label pts-purple" title="300 pts"><input type="checkbox" name="q-cat" value="international_organisations" data-pts="300"> Int. Org</label>
-
-              <label class="cat-label pts-yellow" title="150 pts"><input type="checkbox" name="q-cat" value="pride" data-pts="150" checked> LGBTQ+</label>
+              <label class="choice-label"><input type="radio" name="q-mode" value="unique" checked> Unique Flags</label>
+              <label class="choice-label"><input type="radio" name="q-mode" value="repeats"> Endless (Repeats)</label>
             </div>
           </div>
         </div>
 
-        <!-- RIGHT COLUMN -->
         <div class="settings-col">
-          <!-- Timer Section -->
           <div class="setting-group">
             <div class="setting-header-inline">
               <h3>Timer Limit <span id="timer-mult-label" class="mult-label" style="display: none;">(x2.0)</span></h3>
@@ -138,7 +132,6 @@
             </div>
           </div>
 
-          <!-- Fun Section -->
           <div class="setting-group">
             <h3>Fun Modes</h3>
             <div class="fun-btn-grid">
@@ -149,7 +142,6 @@
             </div>
           </div>
 
-          <!-- Live Score Card -->
           <div class="score-card">
             <h4>Scoring Summary</h4>
             <div class="score-row">

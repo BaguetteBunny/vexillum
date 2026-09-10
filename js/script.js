@@ -4,12 +4,13 @@ document.addEventListener("DOMContentLoaded", () => {
     settings: {
       format: 'mcq',
       mode: 'unique',
-      categories: ['europe', 'north_america', 'south_america', 'africa', 'asia', 'australia'],
+      categories: ['europe', 'north_america', 'south_america', 'africa', 'asia', 'oceania', 'pride'],
       timerEnabled: false,
       timeLimit: 10,
       scoreEnabled: false
     },
     allFlags: {},
+    flagCategory: {},
     poolKeys: [],
     currentFlagCode: null,
     correctCount: 0,
@@ -17,8 +18,11 @@ document.addEventListener("DOMContentLoaded", () => {
     currentScore: 0,
     timerInterval: null,
     timeLeft: 0,
-    isProcessing: false 
+    isProcessing: false,
+    requestId: 0
   };
+
+  const SELF_CONTAINED_CATEGORIES = ['pride', 'international_organisations'];
 
   // DOM Elements
   const elFlag = document.getElementById("quiz-flag");
@@ -266,18 +270,27 @@ function handleRouting() {
     quizState.currentScore = 0;
     updateScoreDisplay();
 
-    quizState.allFlags = {};
+    const requestId = ++quizState.requestId;
+
+    const freshFlags = {};
+    const freshFlagCategory = {};
     for (const cat of quizState.settings.categories) {
       try {
         const res = await fetch(`api/en/${cat}.json`);
         if (res.ok) {
           const data = await res.json();
-          Object.assign(quizState.allFlags, data);
+          Object.assign(freshFlags, data);
+          Object.keys(data).forEach(code => { freshFlagCategory[code] = cat; });
         }
       } catch (err) {
         console.error(`Failed to load ${cat}.json`, err);
       }
     }
+
+    if (requestId !== quizState.requestId) return;
+
+    quizState.allFlags = freshFlags;
+    quizState.flagCategory = freshFlagCategory;
 
     if (Object.keys(quizState.allFlags).length === 0) {
       elFlag.src = "";
@@ -367,11 +380,17 @@ function handleRouting() {
   }
 
   function setupMCQ() {
-    const allKeys = Object.keys(quizState.allFlags);
+    const currentCategory = quizState.flagCategory[quizState.currentFlagCode];
+    const restrictToOwnCategory = SELF_CONTAINED_CATEGORIES.includes(currentCategory);
+
+    const candidateKeys = restrictToOwnCategory
+      ? Object.keys(quizState.allFlags).filter(code => quizState.flagCategory[code] === currentCategory)
+      : Object.keys(quizState.allFlags);
+
     let options = [quizState.currentFlagCode];
-    
-    while (options.length < 4 && options.length < allKeys.length) {
-      const rand = allKeys[Math.floor(Math.random() * allKeys.length)];
+
+    while (options.length < 4 && options.length < candidateKeys.length) {
+      const rand = candidateKeys[Math.floor(Math.random() * candidateKeys.length)];
       if (!options.includes(rand)) options.push(rand);
     }
     
