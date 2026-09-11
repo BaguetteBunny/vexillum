@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="pink">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,9 +13,9 @@
     <div class="sidebar-wrapper">
       <aside class="sidebar">
         <nav class="sidebar-nav">
-          <a href="#/quiz" class="nav-item" data-route="quiz">Quiz</a>
-          <a href="#/api" class="nav-item" data-route="api">API</a>
-          <a href="#/faq" class="nav-item" data-route="faq">FAQ</a>
+          <a href="#/quiz" class="nav-item active">Quiz</a>
+          <a href="https://example.com/api-docs" class="nav-item" target="_blank" rel="noopener noreferrer">API</a>
+          <a href="https://example.com/faq" class="nav-item" target="_blank" rel="noopener noreferrer">FAQ</a>
         </nav>
       </aside>
     </div>
@@ -23,10 +23,9 @@
     <!-- Main Content Area -->
     <main class="content">
       <!-- Quiz View -->
-      <section id="view-quiz" class="view">
+      <section id="view-quiz" class="view active">
         <div class="quiz-header-controls">
-          <div id="quiz-score-badge" class="score-badge" style="display: none;">Score: <span id="outer-score-val">0</span></div>
-          <button id="quiz-settings-btn" class="icon-btn" aria-label="Settings">⚙️</button>
+          <button id="quiz-settings-btn" class="icon-btn settings-icon-btn" aria-label="Settings"></button>
         </div>
 
         <h1 class="main-title">Vexillum</h1>
@@ -56,9 +55,6 @@
           </div>
         </div>
       </section>
-
-      <section id="view-api" class="view"><h2>API Documentation</h2></section>
-      <section id="view-faq" class="view"><h2>Frequently Asked Questions</h2></section>
     </main>
   </div>
 
@@ -78,45 +74,29 @@
             <div class="cat-subgroup">
               <h4 class="cat-subgroup-title">Countries & Territories</h4>
               <div class="checkbox-grid">
-                <label class="cat-label pts-white"><input type="checkbox" name="q-cat" value="europe" data-pts="100" checked> Europe <span class="pts-badge">100</span></label>
-                <label class="cat-label pts-white"><input type="checkbox" name="q-cat" value="north_america" data-pts="100" checked> N. America <span class="pts-badge">100</span></label>
-                <label class="cat-label pts-white"><input type="checkbox" name="q-cat" value="south_america" data-pts="100" checked> S. America <span class="pts-badge">100</span></label>
-                <label class="cat-label pts-yellow"><input type="checkbox" name="q-cat" value="africa" data-pts="150" checked> Africa <span class="pts-badge">150</span></label>
-                <label class="cat-label pts-yellow"><input type="checkbox" name="q-cat" value="asia" data-pts="150" checked> Asia <span class="pts-badge">150</span></label>
-                <label class="cat-label pts-yellow"><input type="checkbox" name="q-cat" value="oceania" data-pts="150" checked> Oceania <span class="pts-badge">150</span></label>
-                <label class="cat-label pts-red"><input type="checkbox" name="q-cat" value="territories" data-pts="250"> Territories <span class="pts-badge">250</span></label>
+                <label class="cat-label pts-white"><input type="checkbox" name="q-cat" value="europe" checked> Europe <span class="pts-badge">Novice</span></label>
+                <label class="cat-label pts-white"><input type="checkbox" name="q-cat" value="north_america" checked> N. America <span class="pts-badge">Novice</span></label>
+                <label class="cat-label pts-white"><input type="checkbox" name="q-cat" value="south_america" checked> S. America <span class="pts-badge">Novice</span></label>
+                <label class="cat-label pts-yellow"><input type="checkbox" name="q-cat" value="africa" checked> Africa <span class="pts-badge">Beginner</span></label>
+                <label class="cat-label pts-yellow"><input type="checkbox" name="q-cat" value="asia" checked> Asia <span class="pts-badge">Beginner</span></label>
+                <label class="cat-label pts-yellow"><input type="checkbox" name="q-cat" value="oceania" checked> Oceania <span class="pts-badge">Beginner</span></label>
+                <label class="cat-label pts-red"><input type="checkbox" name="q-cat" value="territories"> Territories <span class="pts-badge">Advanced</span></label>
               </div>
             </div>
 
             <div class="cat-subgroup">
               <h4 class="cat-subgroup-title">States</h4>
               <div class="checkbox-grid">
-                <label class="cat-label pts-orange"><input type="checkbox" name="q-cat" value="us_states" data-pts="200"> US States <span class="pts-badge">200</span></label>
+                <label class="cat-label pts-orange"><input type="checkbox" name="q-cat" value="us_states"> US States <span class="pts-badge">Intermediate</span></label>
               </div>
             </div>
 
             <div class="cat-subgroup">
               <h4 class="cat-subgroup-title">Others</h4>
               <div class="checkbox-grid">
-                <label class="cat-label pts-yellow"><input type="checkbox" name="q-cat" value="pride" data-pts="150"> LGBTQ+ <span class="pts-badge">150</span></label>
-                <label class="cat-label pts-purple"><input type="checkbox" name="q-cat" value="international_organisations" data-pts="300"> Int. Org <span class="pts-badge">300</span></label>
+                <label class="cat-label pts-yellow"><input type="checkbox" name="q-cat" value="pride" checked> LGBTQ+ <span class="pts-badge">Beginner</span></label>
+                <label class="cat-label pts-purple"><input type="checkbox" name="q-cat" value="international_organisations"> Int. Org <span class="pts-badge">Expert</span></label>
               </div>
-            </div>
-          </div>
-
-          <div class="setting-group">
-            <h3>Format</h3>
-            <div class="checkbox-grid">
-              <label class="choice-label"><input type="radio" name="q-format" value="mcq" checked> Multiple Choice <span class="pts-badge format-badge">x1.0</span></label>
-              <label class="choice-label"><input type="radio" name="q-format" value="written"> Written (Typing) <span class="pts-badge format-badge">x2.0</span></label>
-            </div>
-          </div>
-
-          <div class="setting-group">
-            <h3>Progression</h3>
-            <div class="checkbox-grid">
-              <label class="choice-label"><input type="radio" name="q-mode" value="unique" checked> Unique Flags</label>
-              <label class="choice-label"><input type="radio" name="q-mode" value="repeats"> Endless (Repeats)</label>
             </div>
           </div>
         </div>
@@ -124,7 +104,7 @@
         <div class="settings-col">
           <div class="setting-group">
             <div class="setting-header-inline">
-              <h3>Timer Limit <span id="timer-mult-label" class="mult-label" style="display: none;">(x2.0)</span></h3>
+              <h3>Timer Limit</h3>
               <button id="timer-toggle-btn" class="quiz-btn toggle-btn inactive">Timer: OFF</button>
             </div>
             <div id="timer-slider-container" class="slider-container disabled">
@@ -135,23 +115,37 @@
 
           <div class="setting-group">
             <h3>Fun Modes</h3>
-            <div class="fun-btn-grid">
-              <button id="scoring-toggle-btn" class="quiz-btn fun-btn inactive">Enable Scoring</button>
-              <button class="quiz-btn fun-btn unused" disabled>Double Points</button>
-              <button class="quiz-btn fun-btn unused" disabled>Sudden Death</button>
-              <button class="quiz-btn fun-btn unused" disabled>Reverse Flag</button>
+
+            <div class="cat-subgroup">
+              <h4 class="cat-subgroup-title">Format</h4>
+              <div class="checkbox-grid">
+                <label class="choice-label"><input type="radio" name="q-format" value="mcq" checked> Multiple Choice</label>
+                <label class="choice-label"><input type="radio" name="q-format" value="written"> Written (Typing)</label>
+              </div>
+            </div>
+
+            <div class="cat-subgroup">
+              <h4 class="cat-subgroup-title">Progression</h4>
+              <div class="checkbox-grid">
+                <label class="choice-label"><input type="radio" name="q-mode" value="unique" checked> Unique Flags</label>
+                <label class="choice-label"><input type="radio" name="q-mode" value="repeats"> Endless (Repeats)</label>
+              </div>
+            </div>
+
+            <div class="cat-subgroup">
+              <h4 class="cat-subgroup-title">Extras</h4>
+              <div class="fun-btn-grid">
+                <button class="quiz-btn fun-btn unused" disabled> Coming Soon </button>
+                <button class="quiz-btn fun-btn unused" disabled> Coming Soon </button>
+                <button class="quiz-btn fun-btn unused" disabled> Coming Soon </button>
+              </div>
             </div>
           </div>
 
-          <div class="score-card">
-            <h4>Scoring Summary</h4>
-            <div class="score-row">
-              <span>Points per Flag:</span>
-              <strong id="modal-pts-per-flag">0 pts</strong>
-            </div>
-            <div class="score-row">
-              <span>Current Score:</span>
-              <strong id="modal-current-score">0</strong>
+          <div class="setting-group">
+            <div class="setting-header-inline">
+              <h3>Appearance</h3>
+              <button id="theme-toggle-btn" class="quiz-btn toggle-btn inactive">Dark Mode: OFF</button>
             </div>
           </div>
         </div>

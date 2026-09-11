@@ -6,8 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
       mode: 'unique',
       categories: ['europe', 'north_america', 'south_america', 'africa', 'asia', 'oceania', 'pride'],
       timerEnabled: false,
-      timeLimit: 10,
-      scoreEnabled: false
+      timeLimit: 10
     },
     allFlags: {},
     flagCategory: {},
@@ -15,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
     currentFlagCode: null,
     correctCount: 0,
     totalCount: 0,
-    currentScore: 0,
     timerInterval: null,
     timeLeft: 0,
     isProcessing: false,
@@ -45,120 +43,58 @@ document.addEventListener("DOMContentLoaded", () => {
   const timerSliderContainer = document.getElementById("timer-slider-container");
   const timerSlider = document.getElementById("timer-slider");
   const timerValLabel = document.getElementById("timer-val-label");
-  const timerMultLabel = document.getElementById("timer-mult-label");
-
-  // Scoring DOM
-  const scoringToggleBtn = document.getElementById("scoring-toggle-btn");
-  const quizScoreBadge = document.getElementById("quiz-score-badge");
-  const outerScoreVal = document.getElementById("outer-score-val");
-  const modalPtsPerFlag = document.getElementById("modal-pts-per-flag");
-  const modalCurrentScore = document.getElementById("modal-current-score");
 
   const selectAllCb = document.getElementById("select-all-cats");
   const categoryCbs = document.querySelectorAll('input[name="q-cat"]');
-  const formatRadios = document.querySelectorAll('input[name="q-format"]');
+
+  // Theme toggle
+  const themeToggleBtn = document.getElementById("theme-toggle-btn");
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    const isDark = theme === "dark";
+    themeToggleBtn.classList.toggle("active", isDark);
+    themeToggleBtn.classList.toggle("inactive", !isDark);
+    themeToggleBtn.innerText = isDark ? "Dark Mode: ON" : "Dark Mode: OFF";
+  }
+
+  applyTheme(localStorage.getItem("vexillum-theme") || "pink");
+
+  themeToggleBtn.addEventListener("click", () => {
+    const next = document.documentElement.getAttribute("data-theme") === "dark" ? "pink" : "dark";
+    applyTheme(next);
+    localStorage.setItem("vexillum-theme", next);
+  });
 
   // --- Category Select All Event Listeners ---
   selectAllCb.addEventListener("change", (e) => {
     categoryCbs.forEach(cb => cb.checked = e.target.checked);
-    updateModalPreview();
   });
 
   categoryCbs.forEach(cb => {
     cb.addEventListener("change", () => {
       selectAllCb.checked = Array.from(categoryCbs).every(c => c.checked);
-      updateModalPreview();
     });
   });
 
-  formatRadios.forEach(radio => {
-    radio.addEventListener('change', updateModalPreview);
-  });
-
-  // --- Timer Multiplier Logic ---
-  function getTimerMult(timeValue) {
-    return (1.0 + ((20 - timeValue) * 0.1)).toFixed(1);
-  }
-
-  // --- Timer & Scoring Settings Event Listeners ---
+  // --- Timer Settings Event Listeners ---
   timerToggleBtn.addEventListener("click", () => {
     const isActive = timerToggleBtn.classList.toggle("active");
     timerToggleBtn.classList.toggle("inactive", !isActive);
     timerToggleBtn.innerText = isActive ? "Timer: ON" : "Timer: OFF";
-    
+
     if (isActive) {
       timerSliderContainer.classList.remove("disabled");
       timerSlider.disabled = false;
-      timerMultLabel.style.display = "inline";
-      timerMultLabel.innerText = `(x${getTimerMult(parseInt(timerSlider.value, 10))})`;
     } else {
       timerSliderContainer.classList.add("disabled");
       timerSlider.disabled = true;
-      timerMultLabel.style.display = "none";
     }
-    updateModalPreview();
   });
 
   timerSlider.addEventListener("input", (e) => {
-    const val = parseInt(e.target.value, 10);
-    timerValLabel.innerText = `${val}s`;
-    timerMultLabel.innerText = `(x${getTimerMult(val)})`;
-    updateModalPreview();
+    timerValLabel.innerText = `${e.target.value}s`;
   });
-
-  scoringToggleBtn.addEventListener("click", () => {
-    const isActive = scoringToggleBtn.classList.toggle("active");
-    scoringToggleBtn.classList.toggle("inactive", !isActive);
-    scoringToggleBtn.innerText = isActive ? "Scoring Enabled" : "Enable Scoring";
-    updateModalPreview();
-  });
-
-  // --- Point Calculations ---
-  function calculatePreviewPtsPerFlag() {
-    if (!scoringToggleBtn.classList.contains("active")) return 0;
-    
-    let baseScore = 0;
-    categoryCbs.forEach(cb => {
-      if (cb.checked) baseScore += parseInt(cb.dataset.pts, 10);
-    });
-
-    const format = document.querySelector('input[name="q-format"]:checked').value;
-    const formatMult = format === 'written' ? 2.0 : 1.0;
-
-    let timerMult = 1.0;
-    if (timerToggleBtn.classList.contains("active")) {
-      timerMult = parseFloat(getTimerMult(parseInt(timerSlider.value, 10)));
-    }
-
-    return Math.round(baseScore * formatMult * timerMult);
-  }
-
-  function getPtsPerFlagFromState() {
-    if (!quizState.settings.scoreEnabled) return 0;
-    let baseScore = 0;
-    quizState.settings.categories.forEach(cat => {
-      const cb = document.querySelector(`input[name="q-cat"][value="${cat}"]`);
-      if (cb) baseScore += parseInt(cb.dataset.pts, 10);
-    });
-
-    const formatMult = quizState.settings.format === 'written' ? 2.0 : 1.0;
-    let timerMult = 1.0;
-    if (quizState.settings.timerEnabled) {
-      timerMult = parseFloat(getTimerMult(quizState.settings.timeLimit));
-    }
-    return Math.round(baseScore * formatMult * timerMult);
-  }
-
-  function updateModalPreview() {
-    const pts = calculatePreviewPtsPerFlag();
-    modalPtsPerFlag.innerText = `${pts} pts`;
-  }
-
-  function updateScoreDisplay() {
-    outerScoreVal.innerText = quizState.currentScore;
-    modalCurrentScore.innerText = quizState.currentScore;
-    quizScoreBadge.style.display = quizState.settings.scoreEnabled ? "block" : "none";
-  }
 
   // --- Synchronizes the DOM Inputs to the active state in memory ---
   function syncSettingsUI() {
@@ -172,68 +108,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     timerSlider.value = quizState.settings.timeLimit;
     timerValLabel.innerText = `${quizState.settings.timeLimit}s`;
-    
+
     if (quizState.settings.timerEnabled) {
       timerToggleBtn.classList.add("active");
       timerToggleBtn.classList.remove("inactive");
       timerToggleBtn.innerText = "Timer: ON";
       timerSliderContainer.classList.remove("disabled");
       timerSlider.disabled = false;
-      timerMultLabel.style.display = "inline";
-      timerMultLabel.innerText = `(x${getTimerMult(quizState.settings.timeLimit)})`;
     } else {
       timerToggleBtn.classList.remove("active");
       timerToggleBtn.classList.add("inactive");
       timerToggleBtn.innerText = "Timer: OFF";
       timerSliderContainer.classList.add("disabled");
       timerSlider.disabled = true;
-      timerMultLabel.style.display = "none";
     }
-
-    if (quizState.settings.scoreEnabled) {
-      scoringToggleBtn.classList.add("active");
-      scoringToggleBtn.classList.remove("inactive");
-      scoringToggleBtn.innerText = "Scoring Enabled";
-    } else {
-      scoringToggleBtn.classList.remove("active");
-      scoringToggleBtn.classList.add("inactive");
-      scoringToggleBtn.innerText = "Enable Scoring";
-    }
-
-    updateModalPreview();
   }
-
-function handleRouting() {
-  let hash = window.location.hash.replace("#/", "").toLowerCase();
-  let pathname = window.location.pathname.replace("/", "").toLowerCase();
-  
-  let currentRoute = hash || pathname;
-  if (!currentRoute || currentRoute === "" || currentRoute === "index.html") {
-    currentRoute = "quiz";
-  }
-
-  document.querySelectorAll(".view").forEach(sec => sec.classList.remove("active"));
-  
-  let activeView = document.getElementById(`view-${currentRoute}`);
-  if (!activeView) {
-    currentRoute = "quiz";
-    activeView = document.getElementById("view-quiz");
-  }
-  
-  activeView.classList.add("active");
-
-  document.querySelectorAll(".nav-item").forEach(link => {
-    link.classList.toggle("active", link.getAttribute("data-route") === currentRoute);
-  });
-
-  if (currentRoute === "quiz" && Object.keys(quizState.allFlags).length === 0) {
-    syncSettingsUI(); 
-    applySettingsAndStart(); 
-  }
-}
 
   function normalizeString(str) { return str.toLowerCase().replace(/[^a-z0-9]/g, ''); }
-  
+
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -250,8 +142,7 @@ function handleRouting() {
     quizState.settings.mode = document.querySelector('input[name="q-mode"]:checked').value;
     quizState.settings.timerEnabled = timerToggleBtn.classList.contains("active");
     quizState.settings.timeLimit = parseInt(timerSlider.value, 10);
-    quizState.settings.scoreEnabled = scoringToggleBtn.classList.contains("active");
-    
+
     quizState.settings.categories = Array.from(categoryCbs)
       .filter(cb => cb.checked)
       .map(cb => cb.value);
@@ -266,9 +157,6 @@ function handleRouting() {
 
     elCounter.style.visibility = (quizState.settings.mode === 'unique') ? 'visible' : 'hidden';
     timerDisplay.style.display = quizState.settings.timerEnabled ? 'flex' : 'none';
-
-    quizState.currentScore = 0;
-    updateScoreDisplay();
 
     const requestId = ++quizState.requestId;
 
@@ -393,7 +281,7 @@ function handleRouting() {
       const rand = candidateKeys[Math.floor(Math.random() * candidateKeys.length)];
       if (!options.includes(rand)) options.push(rand);
     }
-    
+
     options = shuffleArray(options);
 
     mcqButtons.forEach((btn, idx) => {
@@ -421,17 +309,11 @@ function handleRouting() {
 
     if (isCorrect) {
       if (quizState.settings.mode === 'unique') quizState.correctCount++;
-      if (quizState.settings.scoreEnabled) {
-        quizState.currentScore += getPtsPerFlagFromState();
-        updateScoreDisplay();
-      }
       targetElement.classList.add("correct-flash");
     } else {
       if (targetElement && targetElement !== elMcqContainer) {
         targetElement.classList.add("wrong-flash");
       }
-      quizState.currentScore = 0;
-      updateScoreDisplay();
 
       if (quizState.settings.format === 'mcq') {
         mcqButtons.forEach(btn => {
@@ -450,8 +332,6 @@ function handleRouting() {
     }, 1000);
   }
 
-  window.addEventListener("hashchange", handleRouting);
-
   mcqButtons.forEach(btn => {
     btn.addEventListener("click", () => {
       handleAnswer((btn.dataset.code === quizState.currentFlagCode), btn);
@@ -464,17 +344,17 @@ function handleRouting() {
     const actual = normalizeString(quizState.allFlags[quizState.currentFlagCode]);
     handleAnswer((guess === actual), elWrittenInput, quizState.allFlags[quizState.currentFlagCode]);
   }
-  
+
   elWrittenSubmit.addEventListener("click", submitWritten);
   elWrittenInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") submitWritten();
   });
 
-  elSettingsBtn.addEventListener("click", () => { 
+  elSettingsBtn.addEventListener("click", () => {
     syncSettingsUI();
-    elModal.classList.add("active"); 
+    elModal.classList.add("active");
   });
-  
+
   window.addEventListener("click", (e) => {
     if (e.target === elModal) {
       elModal.classList.remove("active");
@@ -484,5 +364,6 @@ function handleRouting() {
 
   elSettingsSave.addEventListener("click", applySettingsAndStart);
 
-  handleRouting();
+  syncSettingsUI();
+  applySettingsAndStart();
 });
