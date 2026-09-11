@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     settings: {
       format: 'mcq',
       mode: 'unique',
-      categories: ['europe', 'north_america', 'south_america', 'africa', 'asia', 'oceania', 'pride'],
+      categories: ['europe', 'north_america', 'south_america', 'africa', 'asia', 'oceania'],
       timerEnabled: false,
       timeLimit: 10
     },
@@ -21,6 +21,19 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const SELF_CONTAINED_CATEGORIES = ['pride', 'international_organisations'];
+
+  const CATEGORY_GROUPS = {
+    europe: 'countries_territories',
+    north_america: 'countries_territories',
+    south_america: 'countries_territories',
+    africa: 'countries_territories',
+    asia: 'countries_territories',
+    oceania: 'countries_territories',
+    territories: 'countries_territories',
+    us_states: 'states',
+    pride: 'others',
+    international_organisations: 'others'
+  };
 
   // DOM Elements
   const elFlag = document.getElementById("quiz-flag");
@@ -269,11 +282,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function setupMCQ() {
     const currentCategory = quizState.flagCategory[quizState.currentFlagCode];
-    const restrictToOwnCategory = SELF_CONTAINED_CATEGORIES.includes(currentCategory);
 
-    const candidateKeys = restrictToOwnCategory
-      ? Object.keys(quizState.allFlags).filter(code => quizState.flagCategory[code] === currentCategory)
-      : Object.keys(quizState.allFlags);
+    let candidateKeys;
+    if (SELF_CONTAINED_CATEGORIES.includes(currentCategory)) {
+      candidateKeys = Object.keys(quizState.allFlags).filter(code => quizState.flagCategory[code] === currentCategory);
+    } else {
+      const currentGroup = CATEGORY_GROUPS[currentCategory];
+      candidateKeys = Object.keys(quizState.allFlags).filter(code => CATEGORY_GROUPS[quizState.flagCategory[code]] === currentGroup);
+    }
 
     let options = [quizState.currentFlagCode];
 
