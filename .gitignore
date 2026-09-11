@@ -2,3 +2,4 @@ TODO
 assets
 __pycache__
 py/helper
+.vscode
