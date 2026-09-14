@@ -236,6 +236,8 @@ input[type="range"] { width: 100%; cursor: pointer; accent-color: var(--color-ac
   gap: 0.6rem;
 }
 
+.format-suboptions { margin-top: 0.6rem; }
+
 .cat-subgroup { margin-top: 0.9rem; }
 
 .cat-subgroup-title {

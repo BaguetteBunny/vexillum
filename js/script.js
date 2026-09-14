@@ -6,10 +6,14 @@ document.addEventListener("DOMContentLoaded", () => {
       mode: 'unique',
       categories: ['europe', 'north_america', 'south_america', 'africa', 'asia', 'oceania'],
       timerEnabled: false,
-      timeLimit: 10
+      timeLimit: 10,
+      localizedGuesses: true,
+      allowAlternatives: true,
+      fastType: true
     },
     allFlags: {},
     flagCategory: {},
+    alternatives: {},
     poolKeys: [],
     currentFlagCode: null,
     correctCount: 0,
@@ -60,6 +64,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const selectAllCb = document.getElementById("select-all-cats");
   const categoryCbs = document.querySelectorAll('input[name="q-cat"]');
 
+  // Format sub-option DOM
+  const formatRadios = document.querySelectorAll('input[name="q-format"]');
+  const mcqSuboptions = document.getElementById("mcq-suboptions");
+  const writtenSuboptions = document.getElementById("written-suboptions");
+  const optLocalizedGuesses = document.getElementById("opt-localized-guesses");
+  const optAllowAlternatives = document.getElementById("opt-allow-alternatives");
+  const optFastType = document.getElementById("opt-fast-type");
+
   // Theme toggle
   const themeToggleBtn = document.getElementById("theme-toggle-btn");
 
@@ -109,6 +121,17 @@ document.addEventListener("DOMContentLoaded", () => {
     timerValLabel.innerText = `${e.target.value}s`;
   });
 
+  // --- Format Sub-option Visibility ---
+  function updateFormatSuboptionsVisibility() {
+    const format = document.querySelector('input[name="q-format"]:checked').value;
+    mcqSuboptions.style.display = format === 'mcq' ? 'flex' : 'none';
+    writtenSuboptions.style.display = format === 'written' ? 'flex' : 'none';
+  }
+
+  formatRadios.forEach(radio => {
+    radio.addEventListener("change", updateFormatSuboptionsVisibility);
+  });
+
   // --- Synchronizes the DOM Inputs to the active state in memory ---
   function syncSettingsUI() {
     categoryCbs.forEach(cb => {
@@ -118,6 +141,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll('input[name="q-format"]').forEach(r => r.checked = r.value === quizState.settings.format);
     document.querySelectorAll('input[name="q-mode"]').forEach(r => r.checked = r.value === quizState.settings.mode);
+
+    optLocalizedGuesses.checked = quizState.settings.localizedGuesses;
+    optAllowAlternatives.checked = quizState.settings.allowAlternatives;
+    optFastType.checked = quizState.settings.fastType;
+    updateFormatSuboptionsVisibility();
 
     timerSlider.value = quizState.settings.timeLimit;
     timerValLabel.innerText = `${quizState.settings.timeLimit}s`;
@@ -147,6 +175,32 @@ document.addEventListener("DOMContentLoaded", () => {
     return array;
   }
 
+  function getAlternativesFor(code) {
+    return quizState.alternatives[code] || [];
+  }
+
+  function isCorrectWrittenGuess(rawGuess) {
+    const code = quizState.currentFlagCode;
+    const guess = normalizeString(rawGuess);
+    const canonical = normalizeString(quizState.allFlags[code] || "");
+    if (guess === canonical) return true;
+    if (quizState.settings.allowAlternatives) {
+      return getAlternativesFor(code).some(alt => normalizeString(alt) === guess);
+    }
+    return false;
+  }
+
+  function getDisplayName(code) {
+    if (quizState.settings.localizedGuesses) {
+      const alts = getAlternativesFor(code);
+      if (alts.length > 0) {
+        const pool = [quizState.allFlags[code], ...alts];
+        return pool[Math.floor(Math.random() * pool.length)];
+      }
+    }
+    return quizState.allFlags[code];
+  }
+
   async function applySettingsAndStart() {
     clearTimer();
     elModal.classList.remove("active");
@@ -155,6 +209,9 @@ document.addEventListener("DOMContentLoaded", () => {
     quizState.settings.mode = document.querySelector('input[name="q-mode"]:checked').value;
     quizState.settings.timerEnabled = timerToggleBtn.classList.contains("active");
     quizState.settings.timeLimit = parseInt(timerSlider.value, 10);
+    quizState.settings.localizedGuesses = optLocalizedGuesses.checked;
+    quizState.settings.allowAlternatives = optAllowAlternatives.checked;
+    quizState.settings.fastType = optFastType.checked;
 
     quizState.settings.categories = Array.from(categoryCbs)
       .filter(cb => cb.checked)
@@ -166,6 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       elMcqContainer.style.display = 'none';
       elWrittenContainer.style.display = 'flex';
+      elWrittenSubmit.innerText = quizState.settings.fastType ? "Check" : "Submit";
     }
 
     elCounter.style.visibility = (quizState.settings.mode === 'unique') ? 'visible' : 'hidden';
@@ -188,10 +246,19 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
+    let freshAlternatives = {};
+    try {
+      const res = await fetch(`api/en/alternatives.json`);
+      if (res.ok) freshAlternatives = await res.json();
+    } catch (err) {
+      console.error("Failed to load alternatives.json", err);
+    }
+
     if (requestId !== quizState.requestId) return;
 
     quizState.allFlags = freshFlags;
     quizState.flagCategory = freshFlagCategory;
+    quizState.alternatives = freshAlternatives;
 
     if (Object.keys(quizState.allFlags).length === 0) {
       elFlag.src = "";
@@ -286,9 +353,11 @@ document.addEventListener("DOMContentLoaded", () => {
     let candidateKeys;
     if (SELF_CONTAINED_CATEGORIES.includes(currentCategory)) {
       candidateKeys = Object.keys(quizState.allFlags).filter(code => quizState.flagCategory[code] === currentCategory);
-    } else {
+    } else if (quizState.settings.localizedGuesses) {
       const currentGroup = CATEGORY_GROUPS[currentCategory];
       candidateKeys = Object.keys(quizState.allFlags).filter(code => CATEGORY_GROUPS[quizState.flagCategory[code]] === currentGroup);
+    } else {
+      candidateKeys = Object.keys(quizState.allFlags);
     }
 
     let options = [quizState.currentFlagCode];
@@ -300,11 +369,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     options = shuffleArray(options);
 
+    // Resolve display text per option; retry a few times if localized names collide.
+    let displayNames = options.map(code => getDisplayName(code));
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const seen = new Set();
+      let hasDuplicate = false;
+      for (const name of displayNames) {
+        const key = normalizeString(name);
+        if (seen.has(key)) { hasDuplicate = true; break; }
+        seen.add(key);
+      }
+      if (!hasDuplicate) break;
+      displayNames = options.map(code => getDisplayName(code));
+    }
+
     mcqButtons.forEach((btn, idx) => {
       btn.className = "quiz-btn mcq-btn";
       if (options[idx]) {
         btn.style.display = "block";
-        btn.innerText = quizState.allFlags[options[idx]];
+        btn.innerText = displayNames[idx];
         btn.dataset.code = options[idx];
       } else {
         btn.style.display = "none";
@@ -356,14 +439,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function submitWritten() {
     if (quizState.isProcessing) return;
-    const guess = normalizeString(elWrittenInput.value);
-    const actual = normalizeString(quizState.allFlags[quizState.currentFlagCode]);
-    handleAnswer((guess === actual), elWrittenInput, quizState.allFlags[quizState.currentFlagCode]);
+
+    if (quizState.settings.fastType) {
+      // In Fast Type mode, "Check" gives up the round instead of submitting a guess.
+      handleAnswer(false, elWrittenInput, quizState.allFlags[quizState.currentFlagCode]);
+      return;
+    }
+
+    const isCorrect = isCorrectWrittenGuess(elWrittenInput.value);
+    handleAnswer(isCorrect, elWrittenInput, quizState.allFlags[quizState.currentFlagCode]);
   }
 
   elWrittenSubmit.addEventListener("click", submitWritten);
+
   elWrittenInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") submitWritten();
+    if (e.key === "Enter") {
+      if (quizState.settings.fastType) return; // can't submit directly in Fast Type
+      submitWritten();
+    }
+  });
+
+  elWrittenInput.addEventListener("input", () => {
+    if (quizState.settings.format !== 'written' || !quizState.settings.fastType) return;
+    if (quizState.isProcessing) return;
+    if (isCorrectWrittenGuess(elWrittenInput.value)) {
+      handleAnswer(true, elWrittenInput, quizState.allFlags[quizState.currentFlagCode]);
+    }
   });
 
   elSettingsBtn.addEventListener("click", () => {
